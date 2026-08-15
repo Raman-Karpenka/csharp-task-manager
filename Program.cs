@@ -16,7 +16,8 @@ __TASK MANAGER__
 2. Add task
 3. Complete task
 4. Delete task
-5. Exit
+5. Update task title
+6. Exit
 """);
 
     Console.Write("Choose an option: ");
@@ -36,13 +37,13 @@ __TASK MANAGER__
             Console.WriteLine("Add task");
             Console.WriteLine("Enter task title: ");
             string? title = Console.ReadLine();
-            TodoTask? newTask = taskService.AddTask(title);
-            if (newTask == null)
+            AddTaskResult newTask = taskService.AddTask(title);
+            if (!newTask.IsSuccess)
             {
-                Console.WriteLine("Task already exists.");
+                Console.WriteLine(newTask.Message);
                 break;
             }
-            Console.WriteLine($"Task {newTask.Title} added.");
+            Console.WriteLine($"Task {newTask.Task?.Title} added.");
             break;
 
         case "3":
@@ -84,6 +85,27 @@ __TASK MANAGER__
             break;
 
         case "5":
+            Console.WriteLine("Update task title");
+            Console.WriteLine("Which Task do you want to update?");
+            string? updated = Console.ReadLine();
+            bool isValidUpdatedId = int.TryParse(updated, out int updatedId);
+            if (!isValidUpdatedId)
+            {
+                Console.WriteLine("Invalid task ID.");
+                break;
+            }
+            Console.WriteLine("Enter new title: ");
+            string? newTitle = Console.ReadLine();
+            UpdateTaskResult updateResult = taskService.UpdateTaskTitle(updatedId, newTitle);
+            if (!updateResult.IsSuccess)
+            {
+                Console.WriteLine(updateResult.Message);
+                break;
+            }
+            Console.WriteLine($"Task {updateResult.Task?.Title} is updated.");
+            break;
+
+        case "6":
             Console.WriteLine("Goodbye!");
             flag = false;
             break;
