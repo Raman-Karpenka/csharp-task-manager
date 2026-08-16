@@ -1,5 +1,5 @@
-﻿using csharp_task_manager.Models;
-using csharp_task_manager.Services;
+﻿using TaskManager.Core.Models;
+using TaskManager.Core.Services;
 
 
 TaskService taskService = new TaskService();

@@ -1,5 +1,5 @@
-﻿using csharp_task_manager.Services;
-using csharp_task_manager.Models;
+﻿using TaskManager.Core.Services;
+using TaskManager.Core.Models;
 
 namespace Tests;
 

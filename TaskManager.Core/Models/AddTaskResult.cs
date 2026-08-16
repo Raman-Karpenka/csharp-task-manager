@@ -1,4 +1,4 @@
-namespace csharp_task_manager.Models;
+namespace TaskManager.Core.Models;
 
 public class AddTaskResult
 {

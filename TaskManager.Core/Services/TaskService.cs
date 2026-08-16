@@ -1,6 +1,6 @@
-using csharp_task_manager.Models;
+using TaskManager.Core.Models;
 
-namespace csharp_task_manager.Services;
+namespace TaskManager.Core.Services;
 
 public class TaskService
 {
@@ -111,5 +111,10 @@ public class TaskService
             Message = "Task title updated successfully.",
             Task = task
         };
+    }
+
+    public TodoTask? GetTaskById(int taskId)
+    {
+        return tasks.Find(t => t.Id == taskId);
     }
 }

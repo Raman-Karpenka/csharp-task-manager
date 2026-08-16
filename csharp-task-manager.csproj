@@ -10,5 +10,10 @@
 
   <ItemGroup>
     <Compile Remove="Tests/**/*.cs" />
+    <Compile Remove="TaskManager.Core/**/*.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="TaskManager.Core\TaskManager.Core.csproj" />
   </ItemGroup>
 </Project>

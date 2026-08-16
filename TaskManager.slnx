@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="csharp-task-manager.csproj" />
+  <Project Path="TaskManager.Api/TaskManager.Api.csproj" />
+  <Project Path="TaskManager.Core/TaskManager.Core.csproj" />
+</Solution>
