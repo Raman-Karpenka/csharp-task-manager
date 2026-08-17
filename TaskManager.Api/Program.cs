@@ -1,11 +1,23 @@
 using TaskManager.Core.Models;
 using TaskManager.Core.Services;
 using TaskManager.Api.Models;
+using Microsoft.EntityFrameworkCore;
+using TaskManager.Infrastructure.Data;
+using TaskManager.Core.Repositories;
+using TaskManager.Infrastructure.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddOpenApi();
-builder.Services.AddSingleton<TaskService>();
+
+builder.Services.AddScoped<TaskService>();
+
+builder.Services.AddScoped<ITaskRepository, EfTaskRepository>();
+
+builder.Services.AddDbContext<TaskManagerDbContext>(options =>
+    options.UseSqlite(
+        builder.Configuration.GetConnectionString("DefaultConnection")));
+
 
 var app = builder.Build();
 
@@ -48,6 +60,11 @@ app.MapPost("/api/tasks", (TaskService taskService, CreateTaskRequest request) =
     {
         return Results.BadRequest(result.Message);
     }
+    if (result.Task == null)
+    {
+        return Results.Problem("Task was created successfully but no task was returned.");
+    }
+
     return Results.Created($"/api/tasks/{result.Task.Id}", result.Task);
 })
 .WithName("CreateTask");

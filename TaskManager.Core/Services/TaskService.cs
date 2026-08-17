@@ -1,14 +1,20 @@
 using TaskManager.Core.Models;
+using TaskManager.Core.Repositories;
 
 namespace TaskManager.Core.Services;
 
 public class TaskService
 {
-    private List<TodoTask> tasks = new();
+    private readonly ITaskRepository _taskRepository;
+
+    public TaskService(ITaskRepository taskRepository)
+    {
+        _taskRepository = taskRepository;
+    }
 
     public IReadOnlyList<TodoTask> GetTasks()
     {
-        return tasks;
+        return _taskRepository.GetAll();
     }
 
     public AddTaskResult AddTask(string? title)
@@ -22,7 +28,7 @@ public class TaskService
                 Task = null
             };
         }
-        TodoTask? existingTask = tasks.Find(t => t.Title.Equals(title, StringComparison.OrdinalIgnoreCase));
+        TodoTask? existingTask = _taskRepository.GetAll().FirstOrDefault(t => t.Title.Equals(title, StringComparison.OrdinalIgnoreCase)); 
         if (existingTask != null)
         {
             return new AddTaskResult
@@ -32,14 +38,13 @@ public class TaskService
                 Task = null
             };
         }
-        int newId = tasks.Count > 0 ? tasks.Max(t => t.Id) + 1 : 1;
         TodoTask newTask = new TodoTask
         {
-            Id = newId,
             Title = title,
             IsCompleted = false
         };
-        tasks.Add(newTask);
+        _taskRepository.Add(newTask);
+        _taskRepository.SaveChanges();
         return new AddTaskResult
         {
             IsSuccess = true,
@@ -50,12 +55,13 @@ public class TaskService
 
     public TodoTask? CompleteTask(int taskId)
     {
-        TodoTask? task = tasks.Find(t => t.Id == taskId);
+        TodoTask? task = _taskRepository.GetById(taskId);
         if (task != null)
         {
             if (!task.IsCompleted)
             {
                 task.IsCompleted = true;
+                _taskRepository.SaveChanges();
             }
             return task;
         }
@@ -64,10 +70,11 @@ public class TaskService
 
     public TodoTask? DeleteTask(int taskId)
     {
-        TodoTask? task = tasks.Find(t => t.Id == taskId);
+        TodoTask? task = _taskRepository.GetById(taskId);
         if (task != null)
         {
-            tasks.Remove(task);
+            _taskRepository.Remove(task);
+            _taskRepository.SaveChanges();
             return task;
         }
         return null;
@@ -75,7 +82,7 @@ public class TaskService
 
     public UpdateTaskResult UpdateTaskTitle(int taskId, string? newTitle)
     {
-        TodoTask? task = tasks.Find(t => t.Id == taskId);
+        TodoTask? task = _taskRepository.GetById(taskId);
         if (task == null)
         {
             return new UpdateTaskResult
@@ -94,7 +101,7 @@ public class TaskService
                 Task = null
             };
         }
-        if (tasks.Find(t => t.Id != taskId && t.Title.Equals(newTitle, StringComparison.OrdinalIgnoreCase)) != null)
+        if (_taskRepository.GetAll().FirstOrDefault(t => t.Id != taskId && t.Title.Equals(newTitle, StringComparison.OrdinalIgnoreCase)) != null)
         {
             return new UpdateTaskResult
             {
@@ -105,6 +112,7 @@ public class TaskService
         }
 
         task.Title = newTitle;
+        _taskRepository.SaveChanges();
         return new UpdateTaskResult
         {
             IsSuccess = true,
@@ -115,6 +123,6 @@ public class TaskService
 
     public TodoTask? GetTaskById(int taskId)
     {
-        return tasks.Find(t => t.Id == taskId);
+        return _taskRepository.GetById(taskId);
     }
 }
