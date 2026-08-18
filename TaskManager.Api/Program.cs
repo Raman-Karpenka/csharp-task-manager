@@ -37,15 +37,15 @@ var summaries = new[]
     "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
 };
 
-app.MapGet("/api/tasks", (TaskService taskService) =>
+app.MapGet("/api/tasks", async (TaskService taskService) =>
 {
-    return taskService.GetTasks();
+    return await taskService.GetTasksAsync();
 })
 .WithName("GetTasks");
 
-app.MapGet("/api/tasks/{id:int}", (TaskService taskService, int id) =>
+app.MapGet("/api/tasks/{id:int}", async (TaskService taskService, int id) =>
 {
-    TodoTask? task = taskService.GetTaskById(id);
+    TodoTask? task = await taskService.GetTaskByIdAsync(id);
     if (task == null)
     {
         return Results.NotFound($"Task with ID {id} not found.");
@@ -53,9 +53,9 @@ app.MapGet("/api/tasks/{id:int}", (TaskService taskService, int id) =>
     return Results.Ok(task);
 }).WithName("GetTaskById");
 
-app.MapPost("/api/tasks", (TaskService taskService, CreateTaskRequest request) =>
+app.MapPost("/api/tasks", async (TaskService taskService, CreateTaskRequest request) =>
 {
-    AddTaskResult result = taskService.AddTask(request.Title);
+    AddTaskResult result = await taskService.AddTaskAsync(request.Title);
     if (!result.IsSuccess)
     {
         return Results.BadRequest(result.Message);
@@ -69,9 +69,9 @@ app.MapPost("/api/tasks", (TaskService taskService, CreateTaskRequest request) =
 })
 .WithName("CreateTask");
 
-app.MapDelete("/api/tasks/{id:int}", (TaskService taskService, int id) =>
+app.MapDelete("/api/tasks/{id:int}", async (TaskService taskService, int id) =>
 {
-    TodoTask? deletedTask = taskService.DeleteTask(id);
+    TodoTask? deletedTask = await taskService.DeleteTaskAsync(id);
     if (deletedTask == null)
     {
         return Results.NotFound($"Task with ID {id} not found.");
@@ -79,9 +79,9 @@ app.MapDelete("/api/tasks/{id:int}", (TaskService taskService, int id) =>
     return Results.NoContent();
 }).WithName("DeleteTask");
 
-app.MapPut("/api/tasks/{id:int}", (TaskService taskService, int id, UpdateTaskRequest request) =>
+app.MapPut("/api/tasks/{id:int}", async (TaskService taskService, int id, UpdateTaskRequest request) =>
 {
-    UpdateTaskResult result = taskService.UpdateTaskTitle(id, request.Title);
+    UpdateTaskResult result = await taskService.UpdateTaskTitleAsync(id, request.Title);
     if (!result.IsSuccess)
     {
         if (result.Task == null)

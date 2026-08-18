@@ -3,9 +3,11 @@ using TaskManager.Core.Models;
 namespace TaskManager.Core.Repositories;
 public interface ITaskRepository
 {
-    IReadOnlyList<TodoTask> GetAll();
-    TodoTask? GetById(int id);
+    Task<IReadOnlyList<TodoTask>> GetAllAsync();
+    Task<TodoTask?> GetByIdAsync(int id);
     void Add(TodoTask task);
     void Remove(TodoTask task);
-    void SaveChanges();
+    Task SaveChangesAsync();
+
+    Task<bool> ExistsWithTitleAsync(string title, int? excludeId = null);
 }

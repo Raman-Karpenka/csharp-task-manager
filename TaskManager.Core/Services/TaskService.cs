@@ -1,5 +1,6 @@
 using TaskManager.Core.Models;
 using TaskManager.Core.Repositories;
+using System.Linq;
 
 namespace TaskManager.Core.Services;
 
@@ -12,12 +13,12 @@ public class TaskService
         _taskRepository = taskRepository;
     }
 
-    public IReadOnlyList<TodoTask> GetTasks()
+    public async Task<IReadOnlyList<TodoTask>> GetTasksAsync()
     {
-        return _taskRepository.GetAll();
+        return await _taskRepository.GetAllAsync();
     }
 
-    public AddTaskResult AddTask(string? title)
+    public async Task<AddTaskResult> AddTaskAsync(string? title)
     {
         if (title is null || string.IsNullOrWhiteSpace(title))
         {
@@ -28,8 +29,7 @@ public class TaskService
                 Task = null
             };
         }
-        TodoTask? existingTask = _taskRepository.GetAll().FirstOrDefault(t => t.Title.Equals(title, StringComparison.OrdinalIgnoreCase)); 
-        if (existingTask != null)
+        if (await _taskRepository.ExistsWithTitleAsync(title))
         {
             return new AddTaskResult
             {
@@ -44,7 +44,7 @@ public class TaskService
             IsCompleted = false
         };
         _taskRepository.Add(newTask);
-        _taskRepository.SaveChanges();
+        await _taskRepository.SaveChangesAsync();
         return new AddTaskResult
         {
             IsSuccess = true,
@@ -53,36 +53,36 @@ public class TaskService
         };
     }
 
-    public TodoTask? CompleteTask(int taskId)
+    public async Task<TodoTask?> CompleteTaskAsync(int taskId)
     {
-        TodoTask? task = _taskRepository.GetById(taskId);
+        TodoTask? task = await _taskRepository.GetByIdAsync(taskId);
         if (task != null)
         {
             if (!task.IsCompleted)
             {
                 task.IsCompleted = true;
-                _taskRepository.SaveChanges();
+                await _taskRepository.SaveChangesAsync();
             }
             return task;
         }
         return null;
     }
 
-    public TodoTask? DeleteTask(int taskId)
+    public async Task<TodoTask?> DeleteTaskAsync(int taskId)
     {
-        TodoTask? task = _taskRepository.GetById(taskId);
+        TodoTask? task = await _taskRepository.GetByIdAsync(taskId);
         if (task != null)
         {
             _taskRepository.Remove(task);
-            _taskRepository.SaveChanges();
+            await _taskRepository.SaveChangesAsync();
             return task;
         }
         return null;
     }
 
-    public UpdateTaskResult UpdateTaskTitle(int taskId, string? newTitle)
+    public async Task<UpdateTaskResult> UpdateTaskTitleAsync(int taskId, string? newTitle)
     {
-        TodoTask? task = _taskRepository.GetById(taskId);
+        TodoTask? task = await _taskRepository.GetByIdAsync(taskId);
         if (task == null)
         {
             return new UpdateTaskResult
@@ -101,7 +101,7 @@ public class TaskService
                 Task = null
             };
         }
-        if (_taskRepository.GetAll().FirstOrDefault(t => t.Id != taskId && t.Title.Equals(newTitle, StringComparison.OrdinalIgnoreCase)) != null)
+        if (await _taskRepository.ExistsWithTitleAsync(newTitle, taskId))
         {
             return new UpdateTaskResult
             {
@@ -112,7 +112,7 @@ public class TaskService
         }
 
         task.Title = newTitle;
-        _taskRepository.SaveChanges();
+        await _taskRepository.SaveChangesAsync();
         return new UpdateTaskResult
         {
             IsSuccess = true,
@@ -121,8 +121,8 @@ public class TaskService
         };
     }
 
-    public TodoTask? GetTaskById(int taskId)
+    public async Task<TodoTask?> GetTaskByIdAsync(int taskId)
     {
-        return _taskRepository.GetById(taskId);
+        return await _taskRepository.GetByIdAsync(taskId);
     }
 }

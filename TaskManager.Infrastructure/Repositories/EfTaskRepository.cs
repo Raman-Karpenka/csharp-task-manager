@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using TaskManager.Core.Models;
 using TaskManager.Core.Repositories;
 using TaskManager.Infrastructure.Data;
@@ -13,14 +14,14 @@ public class EfTaskRepository : ITaskRepository
         _dbContext = dbContext;
     }
 
-    public IReadOnlyList<TodoTask> GetAll()
+    public async Task<IReadOnlyList<TodoTask>> GetAllAsync()
     {
-        return _dbContext.Tasks.ToList();
+        return await _dbContext.Tasks.ToListAsync();
     }
 
-    public TodoTask? GetById(int id)
+    public async Task<TodoTask?> GetByIdAsync(int id)
     {
-        return _dbContext.Tasks.Find(id);
+        return await _dbContext.Tasks.FindAsync(id);
     }
 
     public void Add(TodoTask task)
@@ -33,8 +34,15 @@ public class EfTaskRepository : ITaskRepository
         _dbContext.Tasks.Remove(task);
     }
 
-    public void SaveChanges()
+    public async Task SaveChangesAsync()
     {
-        _dbContext.SaveChanges();
+        await _dbContext.SaveChangesAsync();
+    }
+
+    public async Task<bool> ExistsWithTitleAsync(string title, int? excludeId = null)
+    {
+        return await _dbContext.Tasks.AnyAsync(t =>
+            t.Title == title &&
+            (excludeId == null || t.Id != excludeId));
     }
 }
