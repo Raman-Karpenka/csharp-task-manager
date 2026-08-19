@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using TaskManager.Core.Models;
 using TaskManager.Core.Repositories;
+using TaskManager.Core.Enums;
 using TaskManager.Infrastructure.Data;
 
 namespace TaskManager.Infrastructure.Repositories;
@@ -44,5 +45,29 @@ public class EfTaskRepository : ITaskRepository
         return await _dbContext.Tasks.AnyAsync(t =>
             t.Title == title &&
             (excludeId == null || t.Id != excludeId));
+    }
+
+    public async Task<IReadOnlyList<TodoTask>> GetTasksByCompletionStatusAsync(bool? isCompleted, TaskSortBy? sortBy = null)
+    {
+        IQueryable<TodoTask> query = _dbContext.Tasks;
+        if (isCompleted != null)
+        {
+            query = query.Where(t => t.IsCompleted == isCompleted.Value);
+        }
+        if (sortBy.HasValue)
+        {
+            switch (sortBy.Value)
+            {
+                case TaskSortBy.Title:
+                    query = query.OrderBy(t => t.Title);
+                    break;
+
+                case TaskSortBy.Id:
+                    query = query.OrderBy(t => t.Id);
+                    break;
+            }
+        }
+
+        return await query.ToListAsync();
     }
 }

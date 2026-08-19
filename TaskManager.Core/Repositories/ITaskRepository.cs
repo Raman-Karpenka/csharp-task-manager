@@ -1,4 +1,5 @@
 using TaskManager.Core.Models;
+using TaskManager.Core.Enums;
 
 namespace TaskManager.Core.Repositories;
 public interface ITaskRepository
@@ -10,4 +11,6 @@ public interface ITaskRepository
     Task SaveChangesAsync();
 
     Task<bool> ExistsWithTitleAsync(string title, int? excludeId = null);
+
+    Task<IReadOnlyList<TodoTask>> GetTasksByCompletionStatusAsync(bool? isCompleted, TaskSortBy? sortBy = null);
 }

@@ -1,9 +1,10 @@
 using TaskManager.Core.Models;
 using TaskManager.Core.Services;
+using TaskManager.Core.Repositories;
+using TaskManager.Core.Enums;
 using TaskManager.Api.Models;
 using Microsoft.EntityFrameworkCore;
 using TaskManager.Infrastructure.Data;
-using TaskManager.Core.Repositories;
 using TaskManager.Infrastructure.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -37,9 +38,12 @@ var summaries = new[]
     "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
 };
 
-app.MapGet("/api/tasks", async (TaskService taskService) =>
+app.MapGet("/api/tasks", async (
+    TaskService taskService,
+    bool? isCompleted = null,
+    TaskSortBy? sortBy = null) =>
 {
-    return await taskService.GetTasksAsync();
+    return await taskService.GetTasksAsync(isCompleted, sortBy);
 })
 .WithName("GetTasks");
 

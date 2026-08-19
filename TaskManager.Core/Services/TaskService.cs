@@ -1,5 +1,6 @@
 using TaskManager.Core.Models;
 using TaskManager.Core.Repositories;
+using TaskManager.Core.Enums;
 using System.Linq;
 
 namespace TaskManager.Core.Services;
@@ -13,9 +14,11 @@ public class TaskService
         _taskRepository = taskRepository;
     }
 
-    public async Task<IReadOnlyList<TodoTask>> GetTasksAsync()
+    public async Task<IReadOnlyList<TodoTask>> GetTasksAsync(
+        bool? isCompleted = null,
+        TaskSortBy? sortBy = null)
     {
-        return await _taskRepository.GetAllAsync();
+        return await _taskRepository.GetTasksByCompletionStatusAsync(isCompleted, sortBy);
     }
 
     public async Task<AddTaskResult> AddTaskAsync(string? title)
