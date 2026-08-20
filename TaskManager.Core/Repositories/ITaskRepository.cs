@@ -2,6 +2,7 @@ using TaskManager.Core.Models;
 using TaskManager.Core.Enums;
 
 namespace TaskManager.Core.Repositories;
+
 public interface ITaskRepository
 {
     Task<IReadOnlyList<TodoTask>> GetAllAsync();
@@ -12,5 +13,9 @@ public interface ITaskRepository
 
     Task<bool> ExistsWithTitleAsync(string title, int? excludeId = null);
 
-    Task<IReadOnlyList<TodoTask>> GetTasksByCompletionStatusAsync(bool? isCompleted, TaskSortBy? sortBy = null);
+    Task<PagedResult<TodoTask>> GetTasksByCompletionStatusAsync(
+        bool? isCompleted,
+        int page,
+        int pageSize,
+        TaskSortBy? sortBy = null);
 }

@@ -14,11 +14,48 @@ public class TaskService
         _taskRepository = taskRepository;
     }
 
-    public async Task<IReadOnlyList<TodoTask>> GetTasksAsync(
+    public async Task<GetTasksResult> GetTasksAsync(
         bool? isCompleted = null,
-        TaskSortBy? sortBy = null)
+        TaskSortBy? sortBy = null,
+        int? page = null,
+        int? pageSize = null)
     {
-        return await _taskRepository.GetTasksByCompletionStatusAsync(isCompleted, sortBy);
+        int actualPage = page ?? 1;
+        int actualPageSize = pageSize ?? 10;
+
+        if (actualPage < 1)
+        {
+            return new GetTasksResult
+            {
+                IsSuccess = false,
+                Message = "Page must be greater than or equal to 1",
+                Data = null
+            };
+        }
+
+        if (actualPageSize < 1 || actualPageSize > 100)
+        {
+            return new GetTasksResult
+            {
+                IsSuccess = false,
+                Message = "Page size must be between 1 and 100.",
+                Data = null
+            };
+        }
+
+        PagedResult<TodoTask> pagedResult =
+            await _taskRepository.GetTasksByCompletionStatusAsync(
+                isCompleted,
+                actualPage,
+                actualPageSize,
+                sortBy);
+                
+        return new GetTasksResult
+        {
+            IsSuccess = true,
+            Message = "Tasks retrieved successfully.",
+            Data = pagedResult
+        };
     }
 
     public async Task<AddTaskResult> AddTaskAsync(string? title)

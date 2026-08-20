@@ -7,7 +7,14 @@ using Microsoft.EntityFrameworkCore;
 using TaskManager.Infrastructure.Data;
 using TaskManager.Infrastructure.Repositories;
 
+using System.Text.Json.Serialization;
+
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.ConfigureHttpJsonOptions(options =>
+{
+    options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
+});
 
 builder.Services.AddOpenApi();
 
@@ -41,9 +48,23 @@ var summaries = new[]
 app.MapGet("/api/tasks", async (
     TaskService taskService,
     bool? isCompleted = null,
-    TaskSortBy? sortBy = null) =>
+    TaskSortBy? sortBy = null,
+    int? page = null,
+    int? pageSize = null) =>
 {
-    return await taskService.GetTasksAsync(isCompleted, sortBy);
+    GetTasksResult result = await taskService.GetTasksAsync(
+        isCompleted, 
+        sortBy,
+        page,
+        pageSize);
+
+    if (!result.IsSuccess)
+    {
+        return Results.BadRequest(result.Message);
+    }
+
+    return Results.Ok(result.Data);
+
 })
 .WithName("GetTasks");
 

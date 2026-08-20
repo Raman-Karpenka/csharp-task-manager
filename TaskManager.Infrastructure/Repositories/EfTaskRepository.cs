@@ -47,13 +47,17 @@ public class EfTaskRepository : ITaskRepository
             (excludeId == null || t.Id != excludeId));
     }
 
-    public async Task<IReadOnlyList<TodoTask>> GetTasksByCompletionStatusAsync(bool? isCompleted, TaskSortBy? sortBy = null)
+    public async Task<PagedResult<TodoTask>> GetTasksByCompletionStatusAsync(bool? isCompleted, int page, int pageSize, TaskSortBy? sortBy = null)
     {
         IQueryable<TodoTask> query = _dbContext.Tasks;
+
         if (isCompleted != null)
         {
             query = query.Where(t => t.IsCompleted == isCompleted.Value);
         }
+
+        int totalCount = await query.CountAsync();
+
         if (sortBy.HasValue)
         {
             switch (sortBy.Value)
@@ -68,6 +72,12 @@ public class EfTaskRepository : ITaskRepository
             }
         }
 
-        return await query.ToListAsync();
+            query = query
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize);
+
+
+        IReadOnlyList<TodoTask> items = await query.ToListAsync();
+        return new PagedResult<TodoTask>(items, totalCount);
     }
 }
