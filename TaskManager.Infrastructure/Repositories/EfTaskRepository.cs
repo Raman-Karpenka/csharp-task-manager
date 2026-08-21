@@ -71,13 +71,16 @@ public class EfTaskRepository : ITaskRepository
                     break;
             }
         }
-
             query = query
-            .Skip((page - 1) * pageSize)
-            .Take(pageSize);
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize);
 
 
         IReadOnlyList<TodoTask> items = await query.ToListAsync();
-        return new PagedResult<TodoTask>(items, totalCount);
+        return new PagedResult<TodoTask>(
+            items,
+            totalCount,
+            page,
+            pageSize);
     }
 }

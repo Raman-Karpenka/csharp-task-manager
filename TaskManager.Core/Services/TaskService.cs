@@ -49,7 +49,7 @@ public class TaskService
                 actualPage,
                 actualPageSize,
                 sortBy);
-                
+
         return new GetTasksResult
         {
             IsSuccess = true,
@@ -165,4 +165,5 @@ public class TaskService
     {
         return await _taskRepository.GetByIdAsync(taskId);
     }
+
 }
