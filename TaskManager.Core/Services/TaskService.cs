@@ -50,11 +50,26 @@ public class TaskService
                 actualPageSize,
                 sortBy);
 
+        IReadOnlyList<TodoTaskDto> items = pagedResult.Items
+            .Select(task => new TodoTaskDto
+            {
+                Id = task.Id,
+                Title = task.Title,
+                IsCompleted = task.IsCompleted
+            })
+            .ToList();
+
+        PagedResult<TodoTaskDto> dtoResult = new PagedResult<TodoTaskDto>(
+            items,
+            pagedResult.TotalCount,
+            pagedResult.Page,
+            pagedResult.PageSize);
+
         return new GetTasksResult
         {
             IsSuccess = true,
             Message = "Tasks retrieved successfully.",
-            Data = pagedResult
+            Data = dtoResult
         };
     }
 
