@@ -47,13 +47,23 @@ public class EfTaskRepository : ITaskRepository
             (excludeId == null || t.Id != excludeId));
     }
 
-    public async Task<PagedResult<TodoTask>> GetTasksByCompletionStatusAsync(bool? isCompleted, int page, int pageSize, TaskSortBy? sortBy = null)
+    public async Task<PagedResult<TodoTask>> GetTasksByCompletionStatusAsync(
+        bool? isCompleted, 
+        int page, 
+        int pageSize, 
+        TaskSortBy? sortBy = null,
+        string? title = null)
     {
         IQueryable<TodoTask> query = _dbContext.Tasks;
 
         if (isCompleted != null)
         {
             query = query.Where(t => t.IsCompleted == isCompleted.Value);
+        }
+
+        if (!string.IsNullOrEmpty(title))
+        {
+            query = query.Where(t => t.Title.ToLower().Contains(title.ToLower()));
         }
 
         int totalCount = await query.CountAsync();
@@ -74,7 +84,6 @@ public class EfTaskRepository : ITaskRepository
             query = query
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize);
-
 
         IReadOnlyList<TodoTask> items = await query.ToListAsync();
         return new PagedResult<TodoTask>(

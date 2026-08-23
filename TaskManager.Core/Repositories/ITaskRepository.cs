@@ -17,5 +17,6 @@ public interface ITaskRepository
         bool? isCompleted,
         int page,
         int pageSize,
-        TaskSortBy? sortBy = null);
+        TaskSortBy? sortBy = null,
+        string? title = null);
 }
