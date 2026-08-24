@@ -51,10 +51,10 @@ app.MapGet("/api/tasks", async (
     TaskSortBy? sortBy = null,
     int? page = null,
     int? pageSize = null,
-    string? title =  null) =>
+    string? title = null) =>
 {
     GetTasksResult result = await taskService.GetTasksAsync(
-        isCompleted, 
+        isCompleted,
         sortBy,
         page,
         pageSize,
@@ -80,19 +80,27 @@ app.MapGet("/api/tasks/{id:int}", async (TaskService taskService, int id) =>
     return Results.Ok(task);
 }).WithName("GetTaskById");
 
-app.MapPost("/api/tasks", async (TaskService taskService, CreateTaskRequest request) =>
+app.MapPost("/api/tasks", async (
+    TaskService taskService,
+    CreateTodoTaskRequest request) =>
 {
-    AddTaskResult result = await taskService.AddTaskAsync(request.Title);
+    CreateTodoTaskResult result =
+        await taskService.CreateTodoTaskAsync(request);
+
     if (!result.IsSuccess)
     {
         return Results.BadRequest(result.Message);
     }
-    if (result.Task == null)
+
+    if (result.Data == null)
     {
-        return Results.Problem("Task was created successfully but no task was returned.");
+        return Results.Problem(
+            "Task was created successfully but no task was returned.");
     }
 
-    return Results.Created($"/api/tasks/{result.Task.Id}", result.Task);
+    return Results.Created(
+        $"/api/tasks/{result.Data.Id}",
+        result.Data);
 })
 .WithName("CreateTask");
 

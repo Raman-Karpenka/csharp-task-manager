@@ -75,6 +75,27 @@ public class TaskService
         };
     }
 
+    public async Task<CreateTodoTaskResult> CreateTodoTaskAsync(
+    CreateTodoTaskRequest request)
+    {
+        TodoTask task = new TodoTask
+        {
+            Title = request.Title,
+            IsCompleted = false
+        };
+        
+        _taskRepository.Add(task);
+
+        await _taskRepository.SaveChangesAsync();
+
+        return new CreateTodoTaskResult
+        {
+            IsSuccess = true,
+            Message = "Task created successfully.",
+            Data = task
+        };
+    }
+
     public async Task<AddTaskResult> AddTaskAsync(string? title)
     {
         if (title is null || string.IsNullOrWhiteSpace(title))
