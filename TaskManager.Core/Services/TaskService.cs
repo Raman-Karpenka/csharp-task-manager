@@ -83,7 +83,7 @@ public class TaskService
             Title = request.Title,
             IsCompleted = false
         };
-        
+
         _taskRepository.Add(task);
 
         await _taskRepository.SaveChangesAsync();
@@ -158,7 +158,9 @@ public class TaskService
         return null;
     }
 
-    public async Task<UpdateTaskResult> UpdateTaskTitleAsync(int taskId, string? newTitle)
+    public async Task<UpdateTaskResult> UpdateTaskAsync(
+        int taskId,
+        UpdateTaskRequest request)
     {
         TodoTask? task = await _taskRepository.GetByIdAsync(taskId);
         if (task == null)
@@ -170,31 +172,32 @@ public class TaskService
                 Task = null
             };
         }
-        if (newTitle is null || string.IsNullOrWhiteSpace(newTitle))
+        if (request.Title is null || string.IsNullOrWhiteSpace(request.Title))
         {
             return new UpdateTaskResult
             {
                 IsSuccess = false,
                 Message = "Task title cannot be empty.",
-                Task = null
+                Task = task
             };
         }
-        if (await _taskRepository.ExistsWithTitleAsync(newTitle, taskId))
+        if (await _taskRepository.ExistsWithTitleAsync(request.Title, taskId))
         {
             return new UpdateTaskResult
             {
                 IsSuccess = false,
                 Message = "Task title already exists.",
-                Task = null
+                Task = task
             };
         }
 
-        task.Title = newTitle;
+        task.Title = request.Title;
+        task.IsCompleted = request.IsCompleted;
         await _taskRepository.SaveChangesAsync();
         return new UpdateTaskResult
         {
             IsSuccess = true,
-            Message = "Task title updated successfully.",
+            Message = "Task updated successfully.",
             Task = task
         };
     }

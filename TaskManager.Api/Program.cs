@@ -2,7 +2,6 @@ using TaskManager.Core.Models;
 using TaskManager.Core.Services;
 using TaskManager.Core.Repositories;
 using TaskManager.Core.Enums;
-using TaskManager.Api.Models;
 using Microsoft.EntityFrameworkCore;
 using TaskManager.Infrastructure.Data;
 using TaskManager.Infrastructure.Repositories;
@@ -116,7 +115,9 @@ app.MapDelete("/api/tasks/{id:int}", async (TaskService taskService, int id) =>
 
 app.MapPut("/api/tasks/{id:int}", async (TaskService taskService, int id, UpdateTaskRequest request) =>
 {
-    UpdateTaskResult result = await taskService.UpdateTaskTitleAsync(id, request.Title);
+    UpdateTaskResult result = await taskService.UpdateTaskAsync(
+        id, 
+        request);
     if (!result.IsSuccess)
     {
         if (result.Task == null)
