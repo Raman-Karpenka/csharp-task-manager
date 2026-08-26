@@ -78,6 +78,25 @@ public class TaskService
     public async Task<CreateTodoTaskResult> CreateTodoTaskAsync(
     CreateTodoTaskRequest request)
     {
+        if (string.IsNullOrWhiteSpace(request.Title))
+        {
+            return new CreateTodoTaskResult
+            {
+                IsSuccess = false,
+                Message = "Task title cannot be empty.",
+                Data = null
+            };
+        }
+
+        if (await _taskRepository.ExistsWithTitleAsync(request.Title))
+        {
+            return new CreateTodoTaskResult
+            {
+                IsSuccess = false,
+                Message = "Task title already exists.",
+                Data = null
+            };
+        }
         TodoTask task = new TodoTask
         {
             Title = request.Title,
