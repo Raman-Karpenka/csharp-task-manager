@@ -105,10 +105,10 @@ app.MapPost("/api/tasks", async (
 
 app.MapDelete("/api/tasks/{id:int}", async (TaskService taskService, int id) =>
 {
-    TodoTask? deletedTask = await taskService.DeleteTaskAsync(id);
-    if (deletedTask == null)
+    DeleteTodoTaskResult result = await taskService.DeleteTaskAsync(id);
+    if (!result.IsSuccess)
     {
-        return Results.NotFound($"Task with ID {id} not found.");
+        return Results.NotFound(result.Message);
     }
     return Results.NoContent();
 }).WithName("DeleteTask");
@@ -116,7 +116,7 @@ app.MapDelete("/api/tasks/{id:int}", async (TaskService taskService, int id) =>
 app.MapPut("/api/tasks/{id:int}", async (TaskService taskService, int id, UpdateTaskRequest request) =>
 {
     UpdateTaskResult result = await taskService.UpdateTaskAsync(
-        id, 
+        id,
         request);
     if (!result.IsSuccess)
     {

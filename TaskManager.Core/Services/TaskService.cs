@@ -165,16 +165,24 @@ public class TaskService
         return null;
     }
 
-    public async Task<TodoTask?> DeleteTaskAsync(int taskId)
+    public async Task<DeleteTodoTaskResult> DeleteTaskAsync(int taskId)
     {
         TodoTask? task = await _taskRepository.GetByIdAsync(taskId);
         if (task != null)
         {
             _taskRepository.Remove(task);
             await _taskRepository.SaveChangesAsync();
-            return task;
+            return new DeleteTodoTaskResult
+            {
+                IsSuccess = true,
+                Message = "Task deleted successfully."
+            };
         }
-        return null;
+        return new DeleteTodoTaskResult
+        {
+            IsSuccess = false,
+            Message = "Task not found."
+        };
     }
 
     public async Task<UpdateTaskResult> UpdateTaskAsync(
