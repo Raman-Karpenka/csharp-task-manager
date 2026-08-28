@@ -71,12 +71,12 @@ app.MapGet("/api/tasks", async (
 
 app.MapGet("/api/tasks/{id:int}", async (TaskService taskService, int id) =>
 {
-    TodoTask? task = await taskService.GetTaskByIdAsync(id);
-    if (task == null)
+GetTaskByIdResult result = await taskService.GetTaskByIdAsync(id);
+    if (!result.IsSuccess)
     {
-        return Results.NotFound($"Task with ID {id} not found.");
+        return Results.NotFound(result.Message);
     }
-    return Results.Ok(task);
+    return Results.Ok(result.Data);
 }).WithName("GetTaskById");
 
 app.MapPost("/api/tasks", async (

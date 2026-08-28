@@ -115,41 +115,6 @@ public class TaskService
         };
     }
 
-    public async Task<AddTaskResult> AddTaskAsync(string? title)
-    {
-        if (title is null || string.IsNullOrWhiteSpace(title))
-        {
-            return new AddTaskResult
-            {
-                IsSuccess = false,
-                Message = "Task title cannot be empty.",
-                Task = null
-            };
-        }
-        if (await _taskRepository.ExistsWithTitleAsync(title))
-        {
-            return new AddTaskResult
-            {
-                IsSuccess = false,
-                Message = "Task already exists.",
-                Task = null
-            };
-        }
-        TodoTask newTask = new TodoTask
-        {
-            Title = title,
-            IsCompleted = false
-        };
-        _taskRepository.Add(newTask);
-        await _taskRepository.SaveChangesAsync();
-        return new AddTaskResult
-        {
-            IsSuccess = true,
-            Message = "Task added successfully.",
-            Task = newTask
-        };
-    }
-
     public async Task<TodoTask?> CompleteTaskAsync(int taskId)
     {
         TodoTask? task = await _taskRepository.GetByIdAsync(taskId);
@@ -229,9 +194,25 @@ public class TaskService
         };
     }
 
-    public async Task<TodoTask?> GetTaskByIdAsync(int taskId)
+    public async Task<GetTaskByIdResult> GetTaskByIdAsync(int taskId)
     {
-        return await _taskRepository.GetByIdAsync(taskId);
-    }
+        TodoTask? task = await _taskRepository.GetByIdAsync(taskId);
 
+        if (task == null)
+        {
+            return new GetTaskByIdResult
+            {
+                IsSuccess = false,
+                Message = "Task not found.",
+                Data = null
+            };
+        }
+
+        return new GetTaskByIdResult
+        {
+            IsSuccess = true,
+            Message = "Task retrieved successfully.",
+            Data = task
+        };
+    }
 }
