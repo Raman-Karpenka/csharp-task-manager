@@ -207,12 +207,18 @@ public class TaskService
                 Data = null
             };
         }
+        TodoTaskDto dto = new TodoTaskDto
+        {
+            Id = task.Id,
+            Title = task.Title,
+            IsCompleted = task.IsCompleted
+        };
 
         return new GetTaskByIdResult
         {
             IsSuccess = true,
             Message = "Task retrieved successfully.",
-            Data = task
+            Data = dto
         };
     }
 }
