@@ -47,7 +47,7 @@ public class EfTaskRepository : ITaskRepository
             (excludeId == null || t.Id != excludeId));
     }
 
-    public async Task<PagedResult<TodoTask>> GetTasksByCompletionStatusAsync(
+    public async Task<PagedResult<TodoTask>> GetTasksAsync(
         bool? isCompleted, 
         int page, 
         int pageSize, 
@@ -56,14 +56,15 @@ public class EfTaskRepository : ITaskRepository
     {
         IQueryable<TodoTask> query = _dbContext.Tasks;
 
-        if (isCompleted != null)
+        if (isCompleted.HasValue)
         {
             query = query.Where(t => t.IsCompleted == isCompleted.Value);
         }
 
         if (!string.IsNullOrEmpty(title))
         {
-            query = query.Where(t => t.Title.ToLower().Contains(title.ToLower()));
+            string normalizedTitle = title.ToLower();
+            query = query.Where(t => t.Title.ToLower().Contains(normalizedTitle));
         }
 
         int totalCount = await query.CountAsync();

@@ -45,7 +45,7 @@ public class TaskService
         }
 
         PagedResult<TodoTask> pagedResult =
-            await _taskRepository.GetTasksByCompletionStatusAsync(
+            await _taskRepository.GetTasksAsync(
                 isCompleted,
                 actualPage,
                 actualPageSize,

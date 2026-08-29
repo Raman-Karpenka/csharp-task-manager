@@ -13,7 +13,7 @@ public interface ITaskRepository
 
     Task<bool> ExistsWithTitleAsync(string title, int? excludeId = null);
 
-    Task<PagedResult<TodoTask>> GetTasksByCompletionStatusAsync(
+    Task<PagedResult<TodoTask>> GetTasksAsync(
         bool? isCompleted,
         int page,
         int pageSize,
