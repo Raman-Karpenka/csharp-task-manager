@@ -107,11 +107,17 @@ public class TaskService
 
         await _taskRepository.SaveChangesAsync();
 
+        TodoTaskDto dto = new TodoTaskDto
+        {
+            Id = task.Id,
+            Title = task.Title,
+            IsCompleted = task.IsCompleted
+        };
         return new CreateTodoTaskResult
         {
             IsSuccess = true,
             Message = "Task created successfully.",
-            Data = task
+            Data = dto
         };
     }
 
@@ -160,6 +166,7 @@ public class TaskService
             return new UpdateTaskResult
             {
                 IsSuccess = false,
+                IsNotFound = true,
                 Message = "Task not found.",
                 Task = null
             };
@@ -169,8 +176,9 @@ public class TaskService
             return new UpdateTaskResult
             {
                 IsSuccess = false,
+                IsNotFound = false,
                 Message = "Task title cannot be empty.",
-                Task = task
+                Task = null
             };
         }
         if (await _taskRepository.ExistsWithTitleAsync(request.Title, taskId))
@@ -178,19 +186,30 @@ public class TaskService
             return new UpdateTaskResult
             {
                 IsSuccess = false,
+                IsNotFound = false,
                 Message = "Task title already exists.",
-                Task = task
+                Task = null
             };
         }
 
         task.Title = request.Title;
         task.IsCompleted = request.IsCompleted;
+
         await _taskRepository.SaveChangesAsync();
+
+        TodoTaskDto dto = new TodoTaskDto
+        {
+            Id = task.Id,
+            Title = task.Title,
+            IsCompleted = task.IsCompleted
+        };
+
         return new UpdateTaskResult
         {
             IsSuccess = true,
+            IsNotFound = false,
             Message = "Task updated successfully.",
-            Task = task
+            Task = dto
         };
     }
 

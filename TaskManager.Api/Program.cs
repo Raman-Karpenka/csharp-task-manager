@@ -120,7 +120,7 @@ app.MapPut("/api/tasks/{id:int}", async (TaskService taskService, int id, Update
         request);
     if (!result.IsSuccess)
     {
-        if (result.Task == null)
+        if (result.IsNotFound)
         {
             return Results.NotFound($"Task with ID {id} not found.");
         }
