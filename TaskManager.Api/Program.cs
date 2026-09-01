@@ -118,9 +118,9 @@ app.MapPut("/api/tasks/{id:int}", async (TaskService taskService, int id, Update
     UpdateTaskResult result = await taskService.UpdateTaskAsync(
         id,
         request);
-    if (!result.IsSuccess)
+    if (result.Status != ResultStatus.Success)
     {
-        if (result.IsNotFound)
+        if (result.Status == ResultStatus.NotFound)
         {
             return Results.NotFound($"Task with ID {id} not found.");
         }

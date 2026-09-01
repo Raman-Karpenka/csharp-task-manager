@@ -165,30 +165,27 @@ public class TaskService
         {
             return new UpdateTaskResult
             {
-                IsSuccess = false,
-                IsNotFound = true,
                 Message = "Task not found.",
-                Task = null
+                Task = null,
+                Status = ResultStatus.NotFound
             };
         }
         if (request.Title is null || string.IsNullOrWhiteSpace(request.Title))
         {
             return new UpdateTaskResult
             {
-                IsSuccess = false,
-                IsNotFound = false,
                 Message = "Task title cannot be empty.",
-                Task = null
+                Task = null,
+                Status = ResultStatus.ValidationError
             };
         }
         if (await _taskRepository.ExistsWithTitleAsync(request.Title, taskId))
         {
             return new UpdateTaskResult
             {
-                IsSuccess = false,
-                IsNotFound = false,
                 Message = "Task title already exists.",
-                Task = null
+                Task = null,
+                Status = ResultStatus.ValidationError
             };
         }
 
@@ -206,8 +203,7 @@ public class TaskService
 
         return new UpdateTaskResult
         {
-            IsSuccess = true,
-            IsNotFound = false,
+            Status = ResultStatus.Success,
             Message = "Task updated successfully.",
             Task = dto
         };
