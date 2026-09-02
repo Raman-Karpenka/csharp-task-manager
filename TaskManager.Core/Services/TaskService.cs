@@ -217,9 +217,9 @@ public class TaskService
         {
             return new GetTaskByIdResult
             {
-                IsSuccess = false,
                 Message = "Task not found.",
-                Data = null
+                Data = null,
+                Status = ResultStatus.NotFound
             };
         }
         TodoTaskDto dto = new TodoTaskDto
@@ -231,9 +231,9 @@ public class TaskService
 
         return new GetTaskByIdResult
         {
-            IsSuccess = true,
             Message = "Task retrieved successfully.",
-            Data = dto
+            Data = dto,
+            Status = ResultStatus.Success
         };
     }
 }
