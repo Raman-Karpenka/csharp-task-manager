@@ -108,7 +108,7 @@ app.MapPost("/api/tasks", async (
 app.MapDelete("/api/tasks/{id:int}", async (TaskService taskService, int id) =>
 {
     DeleteTodoTaskResult result = await taskService.DeleteTaskAsync(id);
-    if (!result.IsSuccess)
+    if (result.Status != ResultStatus.Success)
     {
         return Results.NotFound(result.Message);
     }

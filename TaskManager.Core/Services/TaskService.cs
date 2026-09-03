@@ -145,13 +145,13 @@ public class TaskService
             await _taskRepository.SaveChangesAsync();
             return new DeleteTodoTaskResult
             {
-                IsSuccess = true,
+                Status = ResultStatus.Success,
                 Message = "Task deleted successfully."
             };
         }
         return new DeleteTodoTaskResult
         {
-            IsSuccess = false,
+            Status = ResultStatus.NotFound,
             Message = "Task not found."
         };
     }
