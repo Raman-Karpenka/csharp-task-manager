@@ -17,6 +17,8 @@ builder.Services.ConfigureHttpJsonOptions(options =>
 
 builder.Services.AddOpenApi();
 
+builder.Services.AddValidation();
+
 builder.Services.AddScoped<TaskService>();
 
 builder.Services.AddScoped<ITaskRepository, EfTaskRepository>();

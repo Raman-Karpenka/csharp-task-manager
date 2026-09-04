@@ -170,7 +170,7 @@ public class TaskService
                 Status = ResultStatus.NotFound
             };
         }
-        if (request.Title is null || string.IsNullOrWhiteSpace(request.Title))
+        if (string.IsNullOrWhiteSpace(request.Title))
         {
             return new UpdateTaskResult
             {
