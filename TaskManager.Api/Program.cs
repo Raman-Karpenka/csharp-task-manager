@@ -19,6 +19,8 @@ builder.Services.AddOpenApi();
 
 builder.Services.AddValidation();
 
+builder.Services.AddProblemDetails();
+
 builder.Services.AddScoped<TaskService>();
 
 builder.Services.AddScoped<ITaskRepository, EfTaskRepository>();
@@ -29,6 +31,8 @@ builder.Services.AddDbContext<TaskManagerDbContext>(options =>
 
 
 var app = builder.Build();
+
+app.UseExceptionHandler();
 
 if (app.Environment.IsDevelopment())
 {
