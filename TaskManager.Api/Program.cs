@@ -21,6 +21,8 @@ builder.Services.AddValidation();
 
 builder.Services.AddProblemDetails();
 
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+
 builder.Services.AddScoped<TaskService>();
 
 builder.Services.AddScoped<ITaskRepository, EfTaskRepository>();

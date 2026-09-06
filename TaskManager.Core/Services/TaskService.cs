@@ -2,16 +2,21 @@ using TaskManager.Core.Models;
 using TaskManager.Core.Repositories;
 using TaskManager.Core.Enums;
 using System.Linq;
+using Microsoft.Extensions.Logging;
 
 namespace TaskManager.Core.Services;
 
 public class TaskService
 {
     private readonly ITaskRepository _taskRepository;
+    private readonly ILogger<TaskService> _logger;
 
-    public TaskService(ITaskRepository taskRepository)
+    public TaskService(
+        ITaskRepository taskRepository,
+        ILogger<TaskService> logger)
     {
         _taskRepository = taskRepository;
+        _logger = logger;
     }
 
     public async Task<GetTasksResult> GetTasksAsync(
@@ -107,6 +112,11 @@ public class TaskService
 
         await _taskRepository.SaveChangesAsync();
 
+        _logger.LogInformation(
+            "Task created successfully. Id: {TaskId}, Title: {Title}",
+            task.Id,
+            task.Title);
+
         TodoTaskDto dto = new TodoTaskDto
         {
             Id = task.Id,
@@ -143,6 +153,11 @@ public class TaskService
         {
             _taskRepository.Remove(task);
             await _taskRepository.SaveChangesAsync();
+
+            _logger.LogInformation( 
+                "Task deleted successfully. Id: {TaskId}, Title: {Title}", 
+                task.Id, 
+                task.Title);
             return new DeleteTodoTaskResult
             {
                 Status = ResultStatus.Success,
@@ -215,6 +230,10 @@ public class TaskService
 
         if (task == null)
         {
+            _logger.LogWarning(
+                "Task not found. Id: {TaskId}",
+                taskId);
+
             return new GetTaskByIdResult
             {
                 Message = "Task not found.",
