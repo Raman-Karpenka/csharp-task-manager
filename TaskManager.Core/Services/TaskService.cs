@@ -87,7 +87,7 @@ public class TaskService
         {
             return new CreateTodoTaskResult
             {
-                IsSuccess = false,
+                Status = ResultStatus.ValidationError,
                 Message = "Task title cannot be empty.",
                 Data = null
             };
@@ -97,7 +97,7 @@ public class TaskService
         {
             return new CreateTodoTaskResult
             {
-                IsSuccess = false,
+                Status = ResultStatus.ValidationError,
                 Message = "Task title already exists.",
                 Data = null
             };
@@ -125,7 +125,7 @@ public class TaskService
         };
         return new CreateTodoTaskResult
         {
-            IsSuccess = true,
+            Status = ResultStatus.Success,
             Message = "Task created successfully.",
             Data = dto
         };

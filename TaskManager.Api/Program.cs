@@ -96,7 +96,7 @@ app.MapPost("/api/tasks", async (
     CreateTodoTaskResult result =
         await taskService.CreateTodoTaskAsync(request);
 
-    if (!result.IsSuccess)
+    if (result.Status != ResultStatus.Success)
     {
         return Results.BadRequest(result.Message);
     }
