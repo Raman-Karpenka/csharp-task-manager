@@ -48,9 +48,9 @@ public class EfTaskRepository : ITaskRepository
     }
 
     public async Task<PagedResult<TodoTask>> GetTasksAsync(
-        bool? isCompleted, 
-        int page, 
-        int pageSize, 
+        bool? isCompleted,
+        int page,
+        int pageSize,
         TaskSortBy? sortBy = null,
         string? title = null)
     {
@@ -80,11 +80,17 @@ public class EfTaskRepository : ITaskRepository
                 case TaskSortBy.Id:
                     query = query.OrderBy(t => t.Id);
                     break;
+
+                case TaskSortBy.IsCompleted:
+                    query = query
+                        .OrderBy(t => t.IsCompleted)
+                        .ThenBy(t => t.Id);
+                         break;
             }
         }
-            query = query
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize);
+        query = query
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize);
 
         IReadOnlyList<TodoTask> items = await query.ToListAsync();
         return new PagedResult<TodoTask>(

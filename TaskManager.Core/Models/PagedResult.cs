@@ -7,7 +7,8 @@ public class PagedResult<T>
     public int Page { get; }
     public int PageSize { get; }
     public int TotalPages { get; }
-
+    public bool HasNextPage { get; }
+    public bool HasPreviousPage { get; }
     public PagedResult(
         IReadOnlyList<T> items,
          int totalCount,
@@ -19,5 +20,7 @@ public class PagedResult<T>
         Page = page;
         PageSize = pageSize;
         TotalPages = (int)Math.Ceiling((double)totalCount / pageSize);
+        HasNextPage = page < TotalPages;
+        HasPreviousPage = page > 1;
     }
 }
