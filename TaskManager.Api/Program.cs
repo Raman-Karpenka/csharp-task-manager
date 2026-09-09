@@ -69,7 +69,9 @@ app.MapGet("/api/tasks", async (
 
     if (!result.IsSuccess)
     {
-        return Results.BadRequest(result.Message);
+        return Results.Problem(
+    detail: result.Message,
+    statusCode: StatusCodes.Status400BadRequest);
     }
 
     return Results.Ok(result.Data);
@@ -83,7 +85,9 @@ app.MapGet("/api/tasks/{id:int}", async (TaskService taskService, int id) =>
 
     if (result.Status == ResultStatus.NotFound)
     {
-        return Results.NotFound(result.Message);
+        return Results.Problem(
+    detail: result.Message,
+    statusCode: StatusCodes.Status404NotFound);
     }
 
     return Results.Ok(result.Data);
@@ -98,13 +102,16 @@ app.MapPost("/api/tasks", async (
 
     if (result.Status != ResultStatus.Success)
     {
-        return Results.BadRequest(result.Message);
+        return Results.Problem(
+            detail: result.Message,
+            statusCode: StatusCodes.Status400BadRequest);
     }
 
     if (result.Data == null)
     {
         return Results.Problem(
-            "Task was created successfully but no task was returned.");
+            "Task was created successfully but no task was returned.",
+            statusCode: StatusCodes.Status500InternalServerError);
     }
 
     return Results.Created(
@@ -118,7 +125,9 @@ app.MapDelete("/api/tasks/{id:int}", async (TaskService taskService, int id) =>
     DeleteTodoTaskResult result = await taskService.DeleteTaskAsync(id);
     if (result.Status != ResultStatus.Success)
     {
-        return Results.NotFound(result.Message);
+        return Results.Problem(
+            detail: result.Message,
+            statusCode: StatusCodes.Status404NotFound);
     }
     return Results.NoContent();
 }).WithName("DeleteTask");
@@ -132,9 +141,13 @@ app.MapPut("/api/tasks/{id:int}", async (TaskService taskService, int id, Update
     {
         if (result.Status == ResultStatus.NotFound)
         {
-            return Results.NotFound($"Task with ID {id} not found.");
+            return Results.Problem(
+                detail: $"Task with ID {id} not found.",
+                statusCode: StatusCodes.Status404NotFound);
         }
-        return Results.BadRequest(result.Message);
+        return Results.Problem(
+            detail: result.Message,
+            statusCode: StatusCodes.Status400BadRequest);
     }
     return Results.Ok(result.Task);
 }).WithName("UpdateTask");
