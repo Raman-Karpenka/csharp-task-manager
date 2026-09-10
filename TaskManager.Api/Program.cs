@@ -6,6 +6,9 @@ using Microsoft.EntityFrameworkCore;
 using TaskManager.Infrastructure.Data;
 using TaskManager.Infrastructure.Repositories;
 
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
+
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -77,7 +80,10 @@ app.MapGet("/api/tasks", async (
     return Results.Ok(result.Data);
 
 })
-.WithName("GetTasks");
+.WithName("GetTasks")
+.WithName("GetTasks")
+.Produces<PagedResult<TodoTaskDto>>(200)
+.Produces<ProblemDetails>(400);
 
 app.MapGet("/api/tasks/{id:int}", async (TaskService taskService, int id) =>
 {
@@ -91,7 +97,9 @@ app.MapGet("/api/tasks/{id:int}", async (TaskService taskService, int id) =>
     }
 
     return Results.Ok(result.Data);
-}).WithName("GetTaskById");
+}).WithName("GetTaskById")
+.Produces<TodoTaskDto>(200)
+.Produces(404);
 
 app.MapPost("/api/tasks", async (
     TaskService taskService,
@@ -118,7 +126,10 @@ app.MapPost("/api/tasks", async (
         $"/api/tasks/{result.Data.Id}",
         result.Data);
 })
-.WithName("CreateTask");
+.WithName("CreateTask")
+.Produces<TodoTaskDto>(201)
+.Produces<ProblemDetails>(400)
+.Produces<ProblemDetails>(500);
 
 app.MapDelete("/api/tasks/{id:int}", async (TaskService taskService, int id) =>
 {
@@ -130,7 +141,9 @@ app.MapDelete("/api/tasks/{id:int}", async (TaskService taskService, int id) =>
             statusCode: StatusCodes.Status404NotFound);
     }
     return Results.NoContent();
-}).WithName("DeleteTask");
+}).WithName("DeleteTask")
+.Produces(204)
+.Produces<ProblemDetails>(404);
 
 app.MapPut("/api/tasks/{id:int}", async (TaskService taskService, int id, UpdateTaskRequest request) =>
 {
@@ -150,7 +163,10 @@ app.MapPut("/api/tasks/{id:int}", async (TaskService taskService, int id, Update
             statusCode: StatusCodes.Status400BadRequest);
     }
     return Results.Ok(result.Task);
-}).WithName("UpdateTask");
+}).WithName("UpdateTask")
+.Produces<TodoTaskDto>(200)
+.Produces<ProblemDetails>(400)
+.Produces<ProblemDetails>(404);
 
 app.Run();
 
