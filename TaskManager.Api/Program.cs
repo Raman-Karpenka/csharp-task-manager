@@ -70,7 +70,8 @@ app.MapGet("/api/tasks", async (
         pageSize,
         title);
 
-    if (!result.IsSuccess)
+    if (result.Status != ResultStatus.Success)
+
     {
         return Results.Problem(
     detail: result.Message,
@@ -162,7 +163,7 @@ app.MapPut("/api/tasks/{id:int}", async (TaskService taskService, int id, Update
             detail: result.Message,
             statusCode: StatusCodes.Status400BadRequest);
     }
-    return Results.Ok(result.Task);
+    return Results.Ok(result.Data);
 }).WithName("UpdateTask")
 .Produces<TodoTaskDto>(200)
 .Produces<ProblemDetails>(400)

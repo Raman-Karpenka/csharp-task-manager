@@ -33,7 +33,7 @@ public class TaskService
         {
             return new GetTasksResult
             {
-                IsSuccess = false,
+                Status = ResultStatus.ValidationError,
                 Message = "Page must be greater than or equal to 1",
                 Data = null
             };
@@ -43,7 +43,7 @@ public class TaskService
         {
             return new GetTasksResult
             {
-                IsSuccess = false,
+                Status = ResultStatus.ValidationError,
                 Message = "Page size must be between 1 and 100.",
                 Data = null
             };
@@ -74,7 +74,7 @@ public class TaskService
 
         return new GetTasksResult
         {
-            IsSuccess = true,
+            Status = ResultStatus.Success,
             Message = "Tasks retrieved successfully.",
             Data = dtoResult
         };
@@ -181,7 +181,7 @@ public class TaskService
             return new UpdateTaskResult
             {
                 Message = "Task not found.",
-                Task = null,
+                Data = null,
                 Status = ResultStatus.NotFound
             };
         }
@@ -190,7 +190,7 @@ public class TaskService
             return new UpdateTaskResult
             {
                 Message = "Task title cannot be empty.",
-                Task = null,
+                Data = null,
                 Status = ResultStatus.ValidationError
             };
         }
@@ -199,7 +199,7 @@ public class TaskService
             return new UpdateTaskResult
             {
                 Message = "Task title already exists.",
-                Task = null,
+                Data = null,
                 Status = ResultStatus.ValidationError
             };
         }
@@ -220,7 +220,7 @@ public class TaskService
         {
             Status = ResultStatus.Success,
             Message = "Task updated successfully.",
-            Task = dto
+            Data = dto
         };
     }
 
