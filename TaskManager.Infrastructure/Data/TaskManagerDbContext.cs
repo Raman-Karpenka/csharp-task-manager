@@ -11,4 +11,11 @@ public class TaskManagerDbContext : DbContext
     }
 
     public DbSet<TodoTask> Tasks { get; set; }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<TodoTask>()
+            .HasIndex(t => t.Title)
+            .IsUnique();
+    }
 }
