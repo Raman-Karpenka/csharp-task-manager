@@ -4,6 +4,7 @@ using TaskManager.Core.Enums;
 using System.Linq;
 using Microsoft.Extensions.Logging;
 
+
 namespace TaskManager.Core.Services;
 
 public class TaskService
@@ -109,9 +110,7 @@ public class TaskService
         };
 
         _taskRepository.Add(task);
-
         await _taskRepository.SaveChangesAsync();
-
         _logger.LogInformation(
             "Task created successfully. Id: {TaskId}, Title: {Title}",
             task.Id,
@@ -154,9 +153,9 @@ public class TaskService
             _taskRepository.Remove(task);
             await _taskRepository.SaveChangesAsync();
 
-            _logger.LogInformation( 
-                "Task deleted successfully. Id: {TaskId}, Title: {Title}", 
-                task.Id, 
+            _logger.LogInformation(
+                "Task deleted successfully. Id: {TaskId}, Title: {Title}",
+                task.Id,
                 task.Title);
             return new DeleteTodoTaskResult
             {
