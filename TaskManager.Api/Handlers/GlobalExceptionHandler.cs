@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Mvc;
 
 public class GlobalExceptionHandler : IExceptionHandler
 {
@@ -10,16 +11,30 @@ public class GlobalExceptionHandler : IExceptionHandler
     {
         _logger = logger;
     }
-    public ValueTask<bool> TryHandleAsync(
+    public async ValueTask<bool> TryHandleAsync(
         HttpContext httpContext,
         Exception exception,
         CancellationToken cancellationToken)
     {
-
         _logger.LogError(
             exception,
             "Unhandled exception occurred.");
 
-        return ValueTask.FromResult(true);
+        httpContext.Response.StatusCode =
+            StatusCodes.Status500InternalServerError;
+
+        httpContext.Response.ContentType =
+            "application/problem+json";
+
+        await httpContext.Response.WriteAsJsonAsync(
+            new ProblemDetails
+            {
+                Status = StatusCodes.Status500InternalServerError,
+                Title = "Internal Server Error",
+                Detail = "An unexpected error occurred."
+            },
+            cancellationToken);
+
+        return true;
     }
 }
