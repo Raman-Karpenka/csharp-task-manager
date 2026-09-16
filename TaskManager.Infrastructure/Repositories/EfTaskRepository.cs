@@ -52,7 +52,8 @@ public class EfTaskRepository : ITaskRepository
         int page,
         int pageSize,
         TaskSortBy? sortBy = null,
-        string? title = null)
+        string? title = null,
+        bool sortDescending = false)
     {
         IQueryable<TodoTask> query = _dbContext.Tasks;
 
@@ -74,18 +75,26 @@ public class EfTaskRepository : ITaskRepository
             switch (sortBy.Value)
             {
                 case TaskSortBy.Title:
-                    query = query.OrderBy(t => t.Title);
+                    query = sortDescending
+                        ? query.OrderByDescending(t => t.Title)
+                        : query.OrderBy(t => t.Title);
                     break;
 
                 case TaskSortBy.Id:
-                    query = query.OrderBy(t => t.Id);
+                    query = sortDescending
+                        ? query.OrderByDescending(t => t.Id)
+                        : query.OrderBy(t => t.Id);
                     break;
 
                 case TaskSortBy.IsCompleted:
-                    query = query
-                        .OrderBy(t => t.IsCompleted)
-                        .ThenBy(t => t.Id);
-                         break;
+                    query = sortDescending
+                        ? query
+                            .OrderByDescending(t => t.IsCompleted)
+                            .ThenByDescending(t => t.Id)
+                        : query
+                            .OrderBy(t => t.IsCompleted)
+                            .ThenBy(t => t.Id);
+                    break;
             }
         }
         query = query

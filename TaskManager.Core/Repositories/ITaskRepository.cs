@@ -18,5 +18,6 @@ public interface ITaskRepository
         int page,
         int pageSize,
         TaskSortBy? sortBy = null,
-        string? title = null);
+        string? title = null,
+        bool sortDescending = false);
 }

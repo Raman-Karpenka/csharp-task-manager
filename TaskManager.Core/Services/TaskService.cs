@@ -25,7 +25,8 @@ public class TaskService
         TaskSortBy? sortBy = null,
         int? page = null,
         int? pageSize = null,
-        string? title = null)
+        string? title = null,
+        bool sortDescending = false)
     {
         int actualPage = page ?? 1;
         int actualPageSize = pageSize ?? 10;
@@ -56,7 +57,8 @@ public class TaskService
                 actualPage,
                 actualPageSize,
                 sortBy,
-                title);
+                title,
+                sortDescending);
 
         IReadOnlyList<TodoTaskDto> items = pagedResult.Items
             .Select(task => new TodoTaskDto
