@@ -146,6 +146,25 @@ app.MapDelete("/api/tasks/{id:int}", async (TaskService taskService, int id) =>
 .Produces(204)
 .Produces<ProblemDetails>(404);
 
+app.MapPatch("/api/tasks/{id:int}/complete", async (
+    TaskService taskService,
+    int id) =>
+{
+    TodoTask? task = await taskService.CompleteTaskAsync(id);
+
+    if (task == null)
+    {
+        return Results.Problem(
+            detail: "Task not found.",
+            statusCode: StatusCodes.Status404NotFound);
+    }
+
+    return Results.NoContent();
+})
+.WithName("CompleteTask")
+.Produces(204)
+.Produces<ProblemDetails>(404);
+
 app.MapPut("/api/tasks/{id:int}", async (TaskService taskService, int id, UpdateTaskRequest request) =>
 {
     UpdateTaskResult result = await taskService.UpdateTaskAsync(
