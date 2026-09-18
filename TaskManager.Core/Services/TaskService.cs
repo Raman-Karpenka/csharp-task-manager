@@ -31,6 +31,15 @@ public class TaskService
         int actualPage = page ?? 1;
         int actualPageSize = pageSize ?? 10;
 
+        if (string.IsNullOrWhiteSpace(title))
+        {
+            title = null;
+        }
+        else
+        {
+            title = title.Trim();
+        }
+
         if (actualPage < 1)
         {
             return new GetTasksResult
