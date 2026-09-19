@@ -82,7 +82,6 @@ app.MapGet("/api/tasks", async (
 
 })
 .WithName("GetTasks")
-.WithName("GetTasks")
 .Produces<PagedResult<TodoTaskDto>>(200)
 .Produces<ProblemDetails>(400);
 
@@ -189,8 +188,3 @@ app.MapPut("/api/tasks/{id:int}", async (TaskService taskService, int id, Update
 .Produces<ProblemDetails>(404);
 
 app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
