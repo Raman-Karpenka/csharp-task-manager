@@ -101,6 +101,30 @@ app.MapGet("/api/tasks/{id:int}", async (TaskService taskService, int id) =>
 .Produces<TodoTaskDto>(200)
 .Produces(404);
 
+app.MapPatch("/api/tasks/{id:int}/toggle", async (
+    TaskService taskService,
+    int id) =>
+{
+    TodoTask? task = await taskService.ToggleTaskAsync(id);
+
+    if (task == null)
+    {
+        return Results.Problem(
+            detail: "Task not found.",
+            statusCode: StatusCodes.Status404NotFound);
+    }
+
+    return Results.Ok(new TodoTaskDto
+    {
+        Id = task.Id,
+        Title = task.Title,
+        IsCompleted = task.IsCompleted
+    });
+})
+.WithName("ToggleTask")
+.Produces<TodoTaskDto>(200)
+.Produces<ProblemDetails>(404);
+
 app.MapPost("/api/tasks", async (
     TaskService taskService,
     CreateTodoTaskRequest request) =>

@@ -156,6 +156,22 @@ public class TaskService
         return null;
     }
 
+    public async Task<TodoTask?> ToggleTaskAsync(int taskId)
+    {
+        TodoTask? task = await _taskRepository.GetByIdAsync(taskId);
+
+        if (task == null)
+        {
+            return null;
+        }
+
+        task.IsCompleted = !task.IsCompleted;
+
+        await _taskRepository.SaveChangesAsync();
+
+        return task;
+    }
+
     public async Task<DeleteTodoTaskResult> DeleteTaskAsync(int taskId)
     {
         TodoTask? task = await _taskRepository.GetByIdAsync(taskId);
