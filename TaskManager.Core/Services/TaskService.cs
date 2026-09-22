@@ -267,18 +267,23 @@ public class TaskService
                 Status = ResultStatus.NotFound
             };
         }
-        TodoTaskDto dto = new TodoTaskDto
-        {
-            Id = task.Id,
-            Title = task.Title,
-            IsCompleted = task.IsCompleted
-        };
+        TodoTaskDto dto = MapToDto(task);
 
         return new GetTaskByIdResult
         {
             Message = "Task retrieved successfully.",
             Data = dto,
             Status = ResultStatus.Success
+        };
+    }
+
+    private TodoTaskDto MapToDto(TodoTask task)
+    {
+        return new TodoTaskDto
+        {
+            Id = task.Id,
+            Title = task.Title,
+            IsCompleted = task.IsCompleted
         };
     }
 }
