@@ -127,12 +127,8 @@ public class TaskService
             task.Id,
             task.Title);
 
-        TodoTaskDto dto = new TodoTaskDto
-        {
-            Id = task.Id,
-            Title = task.Title,
-            IsCompleted = task.IsCompleted
-        };
+        TodoTaskDto dto = MapToDto(task);
+
         return new CreateTodoTaskResult
         {
             Status = ResultStatus.Success,
@@ -235,12 +231,7 @@ public class TaskService
 
         await _taskRepository.SaveChangesAsync();
 
-        TodoTaskDto dto = new TodoTaskDto
-        {
-            Id = task.Id,
-            Title = task.Title,
-            IsCompleted = task.IsCompleted
-        };
+        TodoTaskDto dto = MapToDto(task);
 
         return new UpdateTaskResult
         {
