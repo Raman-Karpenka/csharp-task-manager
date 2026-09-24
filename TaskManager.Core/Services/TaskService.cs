@@ -31,14 +31,7 @@ public class TaskService
         int actualPage = page ?? 1;
         int actualPageSize = pageSize ?? 10;
 
-        if (string.IsNullOrWhiteSpace(title))
-        {
-            title = null;
-        }
-        else
-        {
-            title = title.Trim();
-        }
+        title = NormalizeTitle(title);
 
         if (actualPage < 1)
         {
@@ -266,6 +259,16 @@ public class TaskService
             Data = dto,
             Status = ResultStatus.Success
         };
+    }
+
+    private static string? NormalizeTitle(string? title)
+    {
+        if (string.IsNullOrWhiteSpace(title))
+        {
+            return null;
+        }
+
+        return title.Trim();
     }
 
     private TodoTaskDto MapToDto(TodoTask task)
