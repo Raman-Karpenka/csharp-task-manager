@@ -63,12 +63,7 @@ public class TaskService
                 sortDescending);
 
         IReadOnlyList<TodoTaskDto> items = pagedResult.Items
-            .Select(task => new TodoTaskDto
-            {
-                Id = task.Id,
-                Title = task.Title,
-                IsCompleted = task.IsCompleted
-            })
+            .Select(MapToDto)
             .ToList();
 
         PagedResult<TodoTaskDto> dtoResult = new PagedResult<TodoTaskDto>(
