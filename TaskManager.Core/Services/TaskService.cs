@@ -214,7 +214,7 @@ public class TaskService
             };
         }
 
-        task.Title = request.Title;
+        task.Title = request.Title.Trim();
         task.IsCompleted = request.IsCompleted;
 
         await _taskRepository.SaveChangesAsync();
