@@ -83,6 +83,7 @@ public class TaskService
     public async Task<CreateTodoTaskResult> CreateTodoTaskAsync(
     CreateTodoTaskRequest request)
     {
+        request.Title = request.Title.Trim();
         if (string.IsNullOrWhiteSpace(request.Title))
         {
             return new CreateTodoTaskResult
