@@ -61,7 +61,8 @@ app.MapGet("/api/tasks", async (
     TaskSortBy? sortBy = null,
     int? page = null,
     int? pageSize = null,
-    string? title = null) =>
+    string? title = null,
+    bool sortDescending = false) =>
 {
     GetTasksResult result = await taskService.GetTasksAsync(
         isCompleted,
