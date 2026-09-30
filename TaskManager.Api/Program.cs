@@ -93,7 +93,9 @@ app.MapGet("/api/tasks/{id:int}", async (TaskService taskService, int id) =>
 
     if (result.Status == ResultStatus.NotFound)
     {
-        return Results.NotFound(result.Message);
+        return Results.Problem(
+            detail: result.Message,
+            statusCode: StatusCodes.Status404NotFound);
     }
 
     return Results.Ok(result.Data);
