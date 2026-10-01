@@ -154,6 +154,11 @@ public class TaskService
 
         await _taskRepository.SaveChangesAsync();
 
+        _logger.LogInformation(
+            "Task completion status toggled. Id: {TaskId}, IsCompleted: {IsCompleted}",
+            task.Id,
+            task.IsCompleted);
+
         return task;
     }
 
