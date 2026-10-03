@@ -135,6 +135,10 @@ public class TaskService
             {
                 task.IsCompleted = true;
                 await _taskRepository.SaveChangesAsync();
+                
+                _logger.LogInformation(
+                    "Task completed. Id: {TaskId}",
+                    task.Id);
             }
             return task;
         }
