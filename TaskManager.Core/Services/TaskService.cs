@@ -235,6 +235,11 @@ public class TaskService
 
         await _taskRepository.SaveChangesAsync();
 
+        _logger.LogInformation(
+            "Task updated successfully. Id: {TaskId}, Title: {Title}",
+            task.Id,
+            task.Title);
+            
         TodoTaskDto dto = MapToDto(task);
 
         return new UpdateTaskResult
