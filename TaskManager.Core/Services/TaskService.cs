@@ -239,8 +239,12 @@ public class TaskService
             "Task updated successfully. Id: {TaskId}, Title: {Title}",
             task.Id,
             task.Title);
-            
+
         TodoTaskDto dto = MapToDto(task);
+
+        _logger.LogInformation(
+            "Task retrieved successfully. Id: {TaskId}",
+            task.Id);
 
         return new UpdateTaskResult
         {
